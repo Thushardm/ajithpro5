@@ -1,0 +1,9 @@
+- name:deploying to tomcat
+  hosts:web
+  become:yes
+  tasks:
+  - name:copying WAR file to tomcat
+    copy:
+     src:"/var/snap/jenkins/4874/workspace/app6/target/app6.war"
+     dest:"/home/Thushar/tomcatNew/webapps/"
+     remote_src: no
