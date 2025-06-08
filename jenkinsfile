@@ -1,0 +1,44 @@
+pipeline{
+	agent any
+	
+	tools{
+		maven 'Maven'
+		jdk 'JDK'
+	}
+	
+	stages{
+		stage('Checkout'){
+			steps{
+				checkout scm
+				// git branch:'master', url: ""
+			}
+		}
+		
+		stage('Build'){
+			steps{
+				sh 'mvn clean install'
+			}
+		}
+		
+		stage('Run'){
+			steps{
+				archiveArtifacts artifacts:'target/*.war', fingerprint:true
+			}
+		}
+		
+		stage('Deploy to tomcat'){
+			steps{
+				sh 'ansible-playbook ansible/playbook.yml -i ansible/hosts.ini'
+			}
+		}
+	}
+	
+	post{
+		success{
+			echo "Successful"
+		}
+		failure{
+			echo "Failed"
+		}
+	}
+}
